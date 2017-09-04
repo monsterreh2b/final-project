@@ -10,19 +10,6 @@ class Trading extends React.Component {
             reports: [],
             searchText: ''
         }
-    }
-
-    componentDidMount() {
-        // this is for demo purposes only, it can be made better and the 
-        // token can be obfuscated
-        Request.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&apikey=0X6T0ARD2UNWMQZG').end((err, res) => {
-            if (err) {
-                return console.log(err);
-            } else {
-                this.updateStateReports(res.body);
-            }
-        })
-
         this.search = this.search.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -54,6 +41,16 @@ class Trading extends React.Component {
 
     search(event) {
         event.preventDefault();
+        // this is for demo purposes only, it can be made better and the 
+        // token can be obfuscated
+        const { searchText } = this.state;
+        Request.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${searchText}&apikey=0X6T0ARD2UNWMQZG`).end((err, res) => {
+            if (err) {
+                return console.log(err);
+            } else {
+                this.updateStateReports(res.body);
+            }
+        })
         console.log('We should initiate the search (api call here) with the search query value of ', this.state.searchText);
     }
 
@@ -67,7 +64,7 @@ class Trading extends React.Component {
             <div>
 
                 <div className="row">
-                    <form className="col s12">
+                    <form className="col s12" onSubmit={this.search}>
                         <div className="input-field col s6">
                             <i className="material-icons prefix">search</i>
                             <input id="icon_prefix" type="text" className="validate" value={this.state.searchText} onChange={this.handleInputChange} />
